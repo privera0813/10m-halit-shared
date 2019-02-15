@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "pPeerVPCId",
+    "ParameterValue": "vpc-12345"
+  },
+  {
+    "ParameterKey": "pVPCId",
+    "ParameterValue": "vpc-12345"
+  },
+  {
+    "ParameterKey": "pPeerRegion",
+    "ParameterValue": "us-east-2"
+  }
+]

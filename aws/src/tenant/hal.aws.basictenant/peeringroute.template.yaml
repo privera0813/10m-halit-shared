@@ -1,0 +1,57 @@
+Parameters:
+  pVPCId:
+    Description: Please enter the source VPC ID
+    Type: String
+    Default: vpc-0bd5be35e59e95132
+
+  pPeerVPCId:
+    Description: Please enter the target VPC ID
+    Type: String
+    Default: vpc-0f8ed344035b01ea5
+
+  pPeerRegion:
+    Description: Please enter the source VPC region
+    Type: String
+    Default: us-east-1
+
+  pWLDestinationCidrBlock:
+    Description: Please enter the workload VPC CIDR block
+    Type: String
+    Default: 10.192.0.0/16
+
+  pSSDestinationCidrBlock:
+    Description: Please enter the shared-services VPC CIDR block
+    Type: String
+    Default: 10.193.0.0/16
+
+  pWLRouteTableId:
+    Description: Please enter the route table ID created with the workload VPC deployment
+    Type: String
+    Default: rtb-12345
+
+  pSSRouteTableId:
+    Description: Please enter the route table ID created with the shared-services VPC deployment
+    Type: String
+    Default: rtb-12345
+
+Resources:
+ myVPCPeeringConnection:
+  Type: AWS::EC2::VPCPeeringConnection
+  Properties:
+    PeerVpcId: !Ref pPeerVPCId
+    VpcId: !Ref pVPCId
+    PeerRegion: !Ref pPeerRegion
+
+ myVPCPeeringRouteSS:
+  Type: AWS::EC2::Route
+  Properties:
+    RouteTableId: !Ref pSSRouteTableId
+    DestinationCidrBlock: !Ref pWLDestinationCidrBlock
+    VpcPeeringConnectionId: !Ref myVPCPeeringConnection
+
+ myVPCPeeringRouteWL:
+  Type: AWS::EC2::Route
+  Properties:
+    RouteTableId: !Ref pWLRouteTableId
+    DestinationCidrBlock: !Ref pSSDestinationCidrBlock
+    VpcPeeringConnectionId: !Ref myVPCPeeringConnection

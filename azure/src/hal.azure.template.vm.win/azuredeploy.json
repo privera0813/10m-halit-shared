@@ -1,0 +1,185 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "tags_tenant_name": {
+      "type": "string"
+    },
+    "existing_vnet_name": {
+      "type": "string"
+    },
+    "existing_vnet_subnet_name": {
+      "type": "string"
+    },
+    "vm_machine_name": {
+      "type": "string",
+      "defaultValue": "vm-win-srv1"
+    },
+    "admin_username": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machine."
+      }
+    },
+    "admin_password": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
+    },
+    "vm_dns_name_prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+      }
+    },
+    "windows_os_version": {
+      "type": "string",
+      "defaultValue": "2016-Datacenter",
+      "allowedValues": [
+        "2008-R2-SP1",
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "2016-Nano-Server",
+        "2016-Datacenter-with-Containers",
+        "2016-Datacenter"
+      ],
+      "metadata": {
+        "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
+      }
+    },
+    "resource_location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    }
+  },
+  "variables": {
+    "vm_storage_account_name": "[concat('savmdiagdt', uniqueString(resourceGroup().id))]",
+    "vm_nic_name": "[concat(parameters('vm_machine_name'), '-', uniqueString(resourceGroup().id),'-nic')]",
+    "ip_public_address_name": "[concat(parameters('vm_machine_name'), '-pip')]"
+  },
+  "resources": [
+    {
+      "comments": "Public IP address for VM",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('ip_public_address_name')]",
+      "location": "[parameters('resource_location')]",
+      "apiVersion": "2018-10-01",
+      "tags": {
+        "tenant": "[parameters('tags_tenant_name')]"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "publicIPAddressVersion": "IPv4",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('vm_dns_name_prefix')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('vm_storage_account_name')]",
+      "location": "[parameters('resource_location')]",
+      "apiVersion": "2018-07-01",
+      "tags": {
+        "tenant": "[parameters('tags_tenant_name')]"
+      },
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('vm_nic_name')]",
+      "location": "[parameters('resource_location')]",
+      "apiVersion": "2018-10-01",
+      "tags": {
+        "tenant": "[parameters('tags_tenant_name')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses/', variables('ip_public_address_name'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('ip_public_address_name'))]"
+              },
+              "subnet": {
+                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', parameters('existing_vnet_name'), parameters('existing_vnet_subnet_name'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('vm_machine_name')]",
+      "location": "[parameters('resource_location')]",
+      "apiVersion": "2018-10-01",
+      "tags": {
+        "tenant": "[parameters('tags_tenant_name')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('vm_storage_account_name'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces/', variables('vm_nic_name'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "Standard_A2"
+        },
+        "osProfile": {
+          "computerName": "[parameters('vm_machine_name')]",
+          "adminUsername": "[parameters('admin_username')]",
+          "adminPassword": "[parameters('admin_password')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "[parameters('windows_os_version')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "diskSizeGB": 1023,
+              "lun": 0,
+              "createOption": "Empty"
+            }
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vm_nic_name'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('vm_storage_account_name'))).primaryEndpoints.blob]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "hostname": {
+      "type": "string",
+      "value": "[reference(variables('ip_public_address_name')).dnsSettings.fqdn]"
+    }
+  }
+}

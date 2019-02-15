@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resource_location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "tags_tenant_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Tenant name"
+      }
+    },
+    "tags_service_type": {
+      "type": "string",
+      "defaultValue": "defaultVnet"
+    },
+    "vnet_name": {
+      "type": "string",
+      "defaultValue": "vnet-1"
+    },
+    "vnet_addressPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/16"
+    },
+    "vnet_subnet_name": {
+      "type": "string",
+      "defaultValue": "subnet-1"
+    },
+    "vnet_subnet_adddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.4.0/24"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "name": "[parameters('vnet_name')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[parameters('resource_location')]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [],
+      "tags": {
+        "tenant": "[parameters('tags_tenant_name')]",
+        "serviceType": "[parameters('tags_service_type')]"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnet_addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('vnet_subnet_name')]",
+            "properties": {
+              "addressPrefix": "[parameters('vnet_subnet_adddressPrefix')]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {}
+}

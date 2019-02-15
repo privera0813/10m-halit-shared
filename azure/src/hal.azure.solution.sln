@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "hal.azure.basictenant", "hal.azure.basictenant\hal.azure.basictenant.deployproj", "{583D284A-9111-4E7A-B413-A3F455DB05BE}"
+EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "hal.azure.template.vnet", "hal.azure.template.vnet\hal.azure.template.vnet.deployproj", "{B24314F8-F9AC-46A0-8070-E420C443D126}"
+EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "hal.azure.template.keyvault", "hal.azure.template.keyvault\hal.azure.template.keyvault.deployproj", "{F8D99B6A-1B85-477E-A958-18D1DF3871BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8132D342-AB24-44A9-825E-310BD2614459}"
+	ProjectSection(SolutionItems) = preProject
+		..\Readme.md = ..\Readme.md
+	EndProjectSection
+EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "hal.azure.template.storageaccount", "hal.azure.template.storageaccount\hal.azure.template.storageaccount.deployproj", "{CD1CFD20-DC78-4371-AB4A-26DE2B4718EC}"
+EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "hal.azure.template.vm.win", "hal.azure.template.vm.win\hal.azure.template.vm.win.deployproj", "{7BB88872-4D67-41B2-8CF6-70507FAC6E07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{583D284A-9111-4E7A-B413-A3F455DB05BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{583D284A-9111-4E7A-B413-A3F455DB05BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{583D284A-9111-4E7A-B413-A3F455DB05BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{583D284A-9111-4E7A-B413-A3F455DB05BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B24314F8-F9AC-46A0-8070-E420C443D126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B24314F8-F9AC-46A0-8070-E420C443D126}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B24314F8-F9AC-46A0-8070-E420C443D126}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B24314F8-F9AC-46A0-8070-E420C443D126}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8D99B6A-1B85-477E-A958-18D1DF3871BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8D99B6A-1B85-477E-A958-18D1DF3871BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8D99B6A-1B85-477E-A958-18D1DF3871BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8D99B6A-1B85-477E-A958-18D1DF3871BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD1CFD20-DC78-4371-AB4A-26DE2B4718EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD1CFD20-DC78-4371-AB4A-26DE2B4718EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD1CFD20-DC78-4371-AB4A-26DE2B4718EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD1CFD20-DC78-4371-AB4A-26DE2B4718EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BB88872-4D67-41B2-8CF6-70507FAC6E07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BB88872-4D67-41B2-8CF6-70507FAC6E07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BB88872-4D67-41B2-8CF6-70507FAC6E07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BB88872-4D67-41B2-8CF6-70507FAC6E07}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51C3A863-360D-499D-BBFB-DA70053E26F7}
+	EndGlobalSection
+EndGlobal

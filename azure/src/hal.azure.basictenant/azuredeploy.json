@@ -1,0 +1,148 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resource_location": {
+      "type": "string",
+      "defaultValue": "southcentralus"
+    },
+    "tags_tenant_name": {
+      "type": "string",
+      "defaultValue": "HALIT"
+    },
+    "shared_services_keyvault_sku_name": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "SKU for the vault"
+      }
+    },
+    "shared_services_keyvault_reader_objectId": {
+      "type": "string",
+      "metadata": {
+        "description": "Object Id of the AD user. Get using Get-AzureRmADUser or Get-AzureRmADServicePrincipal cmdlets"
+      }
+    },
+    "shared_services_keyvault_admin_objectId": {
+      "type": "string",
+      "metadata": {
+        "description": "Object Id of the AD user. Get using Get-AzureRmADUser or Get-AzureRmADServicePrincipal cmdlets"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "template_folder": "nestedtemplates",
+    "template_vnet": "vnet.json",
+    "template_keyvault": "keyvault.json",
+    "shared_services_tags_service_type": "ss",
+    "shared_services_vnet_name": "vnet_shared_services1",
+    "shared_services_vnet_addressPrefix": "10.0.0.0/16",
+    "shared_services_vnet_subnet_name": "Services-Subnet-1",
+    "shared_services_vnet_subnet_adddressPrefix": "10.0.4.0/24",
+    "shared_services_keyvault_name": "it-kv",
+    "workload_tags_service_type": "wl",
+    "workload_vnet_name": "vnet_workload1",
+    "workload_vnet_addressPrefix": "10.1.0.0/16",
+    "workload_vnet_subnet_name": "Workload-Subnet-1",
+    "workload_vnet_subnet_adddressPrefix": "10.1.4.0/24"
+  },
+  "resources": [
+    {
+      "comments": "Shared Services VNET - contains IT infrastructure and shared services resources",
+      "name": "vnet-shared-services",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-08-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('template_folder'), '/', variables('template_vnet'), parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "resource_location": { "value": "[parameters('resource_location')]" },
+          "tags_tenant_name": { "value": "[parameters('tags_tenant_name')]" },
+          "tags_service_type": { "value": "[variables('shared_services_tags_service_type')]" },
+          "vnet_name": { "value": "[variables('shared_services_vnet_name')]" },
+          "vnet_addressPrefix": { "value": "[variables('shared_services_vnet_addressPrefix')]" },
+          "vnet_subnet_name": { "value": "[variables('shared_services_vnet_subnet_name')]" },
+          "vnet_subnet_adddressPrefix": { "value": "[variables('shared_services_vnet_subnet_adddressPrefix')]" }
+        }
+      }
+    },
+    {
+      "comments": "Workload VNET - contains Application resources",
+      "name": "vnet-workload",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-08-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('template_folder'), '/', variables('template_vnet'), parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "resource_location": { "value": "[parameters('resource_location')]" },
+          "tags_tenant_name": { "value": "[parameters('tags_tenant_name')]" },
+          "tags_service_type": { "value": "[variables('workload_tags_service_type')]" },
+          "vnet_name": { "value": "[variables('workload_vnet_name')]" },
+          "vnet_addressPrefix": { "value": "[variables('workload_vnet_addressPrefix')]" },
+          "vnet_subnet_name": { "value": "[variables('workload_vnet_subnet_name')]" },
+          "vnet_subnet_adddressPrefix": { "value": "[variables('workload_vnet_subnet_adddressPrefix')]" }
+        }
+      }
+    },
+    {
+      "comments": "VNET Peering between Shared Services and Workload",
+      "apiVersion": "2018-08-01",
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "name": "[concat(variables('workload_vnet_name'), '/peering_to_', variables('shared_services_vnet_name')) ]",
+      "location": "[parameters('resource_location')]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": false,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('shared_services_vnet_name'))]"
+        },
+        "remoteAddressSpace": {
+          "addressPrefixes": "[variables('shared_services_vnet_addressPrefix')]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'vnet-workload')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vnet-shared-services')]"
+      ]
+    },
+    {
+      "comments": "IT KeyVault resources",
+      "name": "[variables('shared_services_keyvault_name')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-08-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('template_folder'), '/', variables('template_keyvault'), parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "tags_tenant_name": { "value": "[parameters('tags_tenant_name')]" },
+          "tags_service_type": { "value": "[variables('workload_tags_service_type')]" },
+          "keyVaultName": { "value": "[variables('shared_services_keyvault_name')]" },
+          "readerObjectId": { "value": "[parameters('shared_services_keyvault_reader_objectId')]" },
+          "adminObjectId": { "value": "[parameters('shared_services_keyvault_admin_objectId')]" }
+        }
+      }
+    }
+  ]
+}

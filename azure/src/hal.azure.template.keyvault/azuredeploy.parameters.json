@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "tags_tenant_name": { "value": "Halliburton-IT" },
+    "tags_service_type": { "value": "ss" },
+    "keyVaultName": {"value": "it-kv" },
+    "skuName": {
+      "metadata": {
+        "description": "Use 'Premium' for Production deployment to get hardware HSM.  Standard is Software based vault"
+      },
+      "value": "Standard"
+    },
+    "readerObjectId": {
+      "metadata": {
+        "description": "Access for Service Principal 'az-spn-devops-itpubliccloud' with ObjectID '82f44d89-9e4e-47e6-94dc-6144f27b7a5d'"
+      },
+      "value": "82f44d89-9e4e-47e6-94dc-6144f27b7a5d"
+    },
+    "adminObjectId": {
+      "metadata": {
+        "description": "Access for Admin group 'HAL_ADM_ITPUBLICCLOUD_DEV' with ObjectID '4c641adf-0a6a-42ac-9c4f-bec0299da1c2'"
+      },
+      "value": "9f2825b1-5f25-4560-a72e-50bee77c5d7c"
+    }
+  }
+}

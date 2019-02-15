@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "tags_tenant_name": { "value": "Halliburton-IT" },
+    "existing_vnet_name": { "value": "vnet_shared_services1" },
+    "existing_vnet_subnet_name": { "value": "Services-Subnet-1" },
+    "vm_dns_name_prefix": { "value": "lpcvm1" },
+    "vm_machine_name": { "value": "vm-win-srv1" },
+    "admin_username": { "value": "" }
+  }
+}
