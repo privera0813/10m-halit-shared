@@ -1,0 +1,13 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vNet1Name":
+        {
+            "value": "vnet_sharedservices"
+        },
+        "vNet2Name": {
+            "value": "vnet_workload1"
+        }
+    }
+}
