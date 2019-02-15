@@ -1,0 +1,25 @@
+{
+
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "haladmin"
+    },
+    "authenticationType": {
+      "value": "sshPublicKey"
+    },
+    "sshKeyData": {
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCiOKXhlJk9hqwMX03T1JbfR0821f5UAOn+EW3/YR0DZ/BMTEbL1RUfjooItpLfizNr0Baea8QuZ9N6lP3RdyqrzoHWQnUveF7UyRMbduLAb4rfQWl3tkOpvxb1EVsUiKnnhffUS/tccDDv4vxKmDXVd75J1l38off2HJe5uyR5GCKzdy1b73cIM455NN24R/R/0DAYl0r/0cV5OQL5wAWexUam+Ih1n44OI3oJWYZhnwiY/ClNMrreexu9oF86oqnc3itiNkySMKtVpr0vfFZ1Z2TA/nylNC8AmFFJNmKM4S/5plEcB86cFGeyKETNyPBpzW1mQIuIyrX5OBpD46fJzRAWTStnxKpQZTuRdvsHseb5zuRDILFt9gcNewkDDA+SBXSILMRp8GSFDfWsSkQ692nJCLTcFzl9rrvriFnJWR+G9w+Ruo0bcqUjs2GLegilxOO5sc1bTGgvNeMSG0dOUCWT+3b/dXbvY0QU8v6AUYOa7pQEbwSDsFwIG7bL555BitHkoo77jYmleH/SHKMwiM51eO0FXNNOQkRScC1hYgZ8mWGPDrD/4IpP0D0kkU2xwuHFTHjo26wzjtS3rH/o6ePgP9y4g86+Z9hJ5WEA13d/mG0sybrl7KrNN2Wg+G3Eq8Jrb7q+an8jG2Zhl+orc/i3CXqzdDcHT8YkwtSlMQ== HAL Admin"
+    },
+    "dnsLabelPrefix": {
+      "value": "sharedserviceshallie1"
+    },
+    "ubuntuOSVersion": {
+      "value": "16.04.0-LTS"
+    },
+    "location": {
+      "value": "southcentralus"
+    }
+  }
+}
